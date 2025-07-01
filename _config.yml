@@ -1,22 +1,53 @@
 title: YZ's Blog
 description: A blog about AWS and cloud technologies
+author: YZ Wang
+avatar: /assets/avatar.png
+email: wangyz180@gmail.com
 baseurl: ""
 url: "https://blog.ifyz.wang"
 
 # Build settings
 markdown: kramdown
 highlighter: rouge
-theme: minima
 
-# Plugins
+# Hamilton theme settings
 plugins:
+  - jekyll-remote-theme
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-paginate
+
+remote_theme: ngzhio/jekyll-theme-hamilton
+
+# Pagination
+paginate: 10
+paginate_path: "/page:num/"
+
+# Hamilton specific settings
+skin: daylight  # Options: daylight, midnight, sunrise, sunset (or leave empty for auto)
+date_format: "%b %-d, %Y"
+subscribe: true
 
 # Social links
 github_username: aws-yz
-email: wangyz180@gmail.com
+
+# Optional: Uncomment and set for production
+# google_analytics: YOUR_TRACKING_ID
+# disqus: YOUR_DISQUS_SHORTNAME
+
+# Jekyll SEO Tag settings
+twitter:
+  username: aws_yz
+  card: summary
+logo: /assets/logo.png
+social:
+  name: YZ Wang
+  links:
+    - https://github.com/aws-yz
+
+# Language
+lang: en
 
 # Exclude from processing
 exclude:
@@ -27,3 +58,5 @@ exclude:
   - vendor/cache/
   - vendor/gems/
   - vendor/ruby/
+  - scripts/
+  - README.md

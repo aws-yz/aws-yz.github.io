@@ -1,0 +1,9 @@
+- title: GitHub
+  url: https://github.com/aws-yz
+  icon: fab fa-github
+- title: Email
+  url: mailto:wangyz180@gmail.com
+  icon: fas fa-envelope
+- title: RSS
+  url: /feed.xml
+  icon: fas fa-rss
