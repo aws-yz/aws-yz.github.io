@@ -29,7 +29,7 @@ paginate_path: "/page:num/"
 
 # Hamilton specific settings
 skin: daylight  # 推荐使用 daylight 获得最佳可读性
-date_format: "%Y年%m月%d日"  # 中文日期格式更友好
+date_format: "%Y-%m-%d UTC"  # 明确显示 UTC 时间
 subscribe: true
 
 # Social links
