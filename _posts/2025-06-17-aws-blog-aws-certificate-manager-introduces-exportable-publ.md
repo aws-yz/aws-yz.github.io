@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AWS Certificate Manager introduces exportable public SSL/TLS certificates to use anywhere"
-date: 2025-06-17T14:46:20.000Z
+date: 2025-06-17T22:46:20+08:00
 categories: [aws, news]
 tags: [Announcements, AWS Certificate Manager, AWS reInforce, Featured, Launch, News, Security Identity Compliance]
 toc: true

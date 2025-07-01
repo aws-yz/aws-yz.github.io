@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AWS Weekly Roundup: re:Inforce re:Cap, Valkey GLIDE 2.0, Avro and Protobuf or MCP Servers on Lambda, and more (June 23, 2025)"
-date: 2025-06-23T16:16:57.000Z
+date: 2025-06-23T00:16:57+08:00
 categories: [aws, database, storage, news]
 tags: [Amazon ElastiCache, Amazon Simple Storage Service (S3), Announcements, AWS Lambda, Generative AI, Launch, News, Open Source, Week in Review]
 toc: true

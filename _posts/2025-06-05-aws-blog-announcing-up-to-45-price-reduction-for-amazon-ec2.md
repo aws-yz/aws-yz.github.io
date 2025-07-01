@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Announcing up to 45% price reduction for Amazon EC2 NVIDIA GPU-accelerated instances"
-date: 2025-06-05T17:13:27.000Z
+date: 2025-06-05T01:13:27+08:00
 categories: [aws, compute, news]
 tags: [Amazon EC2, Compute, Featured, Launch, News, Price Reduction]
 toc: true

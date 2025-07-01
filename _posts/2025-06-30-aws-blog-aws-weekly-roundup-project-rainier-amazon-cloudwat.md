@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AWS Weekly Roundup: Project Rainier, Amazon CloudWatch investigations, AWS MCP servers, and more (June 30, 2025)"
-date: 2025-06-30T16:39:17.000Z
+date: 2025-06-30T00:39:17+08:00
 categories: [aws, ai-ml, networking, storage]
 tags: [Amazon Bedrock Guardrails, Amazon CloudWatch, Amazon Q Developer, Amazon Route 53, Amazon Simple Storage Service (S3), Announcements, AWS IoT Device Management, Launch, News, Week in Review]
 toc: true

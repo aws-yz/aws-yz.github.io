@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Amazon CloudFront simplifies web application delivery and security with new user-friendly interface"
-date: 2025-06-17T14:52:15.000Z
+date: 2025-06-17T22:52:15+08:00
 categories: [aws, networking, news]
 tags: [Amazon CloudFront, Announcements, AWS reInforce, AWS WAF, Featured, Launch, News]
 toc: true

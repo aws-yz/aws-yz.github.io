@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Now open – AWS Asia Pacific (Taipei) Region"
-date: 2025-06-06T01:11:30.000Z
+date: 2025-06-06T09:11:30+08:00
 categories: [aws, news]
 tags: [Announcements, Featured, News, Regions]
 toc: true

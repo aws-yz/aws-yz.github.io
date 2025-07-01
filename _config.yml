@@ -11,7 +11,7 @@ markdown: kramdown
 highlighter: rouge
 future: true  # 允许显示未来日期的文章
 show_excerpts: true  # 在首页显示文章摘要
-timezone: Asia/Shanghai  # 设置时区
+timezone: UTC  # 暂时使用 UTC 时区，避免日期转换问题
 
 # Hamilton theme settings
 plugins:

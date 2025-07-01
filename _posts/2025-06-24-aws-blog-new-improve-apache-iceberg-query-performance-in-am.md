@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "New: Improve Apache Iceberg query performance in Amazon S3 with sort and z-order compaction"
-date: 2025-06-24T20:27:59.000Z
+date: 2025-06-24T04:27:59+08:00
 categories: [aws, storage, news]
 tags: [Amazon S3 Tables, Announcements, AWS Glue, Featured, Launch, News]
 toc: true

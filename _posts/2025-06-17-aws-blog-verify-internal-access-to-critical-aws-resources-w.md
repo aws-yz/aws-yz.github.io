@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Verify internal access to critical AWS resources with new IAM Access Analyzer capabilities"
-date: 2025-06-17T14:09:08.000Z
+date: 2025-06-17T22:09:08+08:00
 categories: [aws, news]
 tags: [Announcements, AWS IAM Access Analyzer, AWS Identity and Access Management (IAM), AWS reInforce, Featured, Launch, News, Security, Security Identity Compliance]
 toc: true

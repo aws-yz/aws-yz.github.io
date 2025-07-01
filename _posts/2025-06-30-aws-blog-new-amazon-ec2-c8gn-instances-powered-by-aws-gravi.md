@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "New Amazon EC2 C8gn instances powered by AWS Graviton4 offering up to 600Gbps network bandwidth"
-date: 2025-06-30T18:01:32.000Z
+date: 2025-06-30T02:01:32+08:00
 categories: [aws, compute, news]
 tags: [Amazon EC2, Announcements, Compute, Featured, Graviton, Launch, News]
 toc: true

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AWS Weekly Roundup: New AWS Heroes, Amazon Q Developer, EC2 GPU price reduction, and more (June 9, 2025)"
-date: 2025-06-09T17:34:46.000Z
+date: 2025-06-09T01:34:46+08:00
 categories: [aws, compute, news]
 tags: [Amazon API Gateway, Amazon Athena, Amazon EC2, Amazon Elastic Kubernetes Service, Amazon Q Developer, Announcements, AWS Heroes, AWS Network Firewall, Graviton, Week in Review]
 toc: true

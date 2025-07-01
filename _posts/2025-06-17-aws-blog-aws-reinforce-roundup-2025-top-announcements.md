@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AWS re:Inforce roundup 2025: top announcements"
-date: 2025-06-17T17:10:23.000Z
+date: 2025-06-17T01:10:23+08:00
 categories: [aws, news]
 tags: [Announcements, AWS reInforce, Featured, Launch, News]
 toc: true

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Build the highest resilience apps with multi-Region strong consistency in Amazon DynamoDB global tables"
-date: 2025-06-30T20:30:48.000Z
+date: 2025-06-30T04:30:48+08:00
 categories: [aws, database, news]
 tags: [Amazon DynamoDB, Announcements, Database, Featured, Launch, News]
 toc: true

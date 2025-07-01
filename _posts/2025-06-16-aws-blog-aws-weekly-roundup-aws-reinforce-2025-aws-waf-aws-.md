@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AWS Weekly Roundup: AWS re:Inforce 2025, AWS WAF, AWS Control Tower, and more (June 16, 2025)"
-date: 2025-06-16T16:56:37.000Z
+date: 2025-06-16T00:56:37+08:00
 categories: [aws, news, compute]
 tags: [Announcements, AWS Control Tower, AWS Lambda, AWS WAF, Launch, News, Week in Review]
 toc: true

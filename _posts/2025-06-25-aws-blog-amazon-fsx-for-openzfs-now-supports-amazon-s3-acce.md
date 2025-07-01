@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Amazon FSx for OpenZFS now supports Amazon S3 access without any data movement"
-date: 2025-06-25T20:52:23.000Z
+date: 2025-06-25T04:52:23+08:00
 categories: [aws, storage, news]
 tags: [Amazon FSx, Amazon Simple Storage Service (S3), Announcements, Featured, Launch, News, Storage]
 toc: true

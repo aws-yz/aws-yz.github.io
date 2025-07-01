@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "New AWS Shield feature discovers network security issues before they can be exploited (Preview)"
-date: 2025-06-17T15:24:29.000Z
+date: 2025-06-17T23:24:29+08:00
 categories: [aws, news]
 tags: [Announcements, AWS reInforce, AWS Shield, Featured, Launch, News, Security Identity Compliance]
 toc: true

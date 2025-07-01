@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Introducing AWS API models and publicly available resources for AWS API definitions"
-date: 2025-06-05T20:18:26.000Z
+date: 2025-06-05T04:18:26+08:00
 categories: [aws, news]
 tags: [Announcements, Developer Tools, Featured, Launch, News]
 toc: true

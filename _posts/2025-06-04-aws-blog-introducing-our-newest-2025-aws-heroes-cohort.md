@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Introducing our newest 2025 AWS Heroes cohort"
-date: 2025-06-04T17:37:15.000Z
+date: 2025-06-04T01:37:15+08:00
 categories: [aws, news]
 tags: [Announcements, AWS Heroes, Launch, News]
 toc: true

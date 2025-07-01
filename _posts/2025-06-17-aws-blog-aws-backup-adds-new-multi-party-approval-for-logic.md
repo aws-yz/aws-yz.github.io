@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AWS Backup adds new Multi-party approval for logically air-gapped vaults"
-date: 2025-06-17T15:50:14.000Z
+date: 2025-06-17T23:50:14+08:00
 categories: [aws, news, storage]
 tags: [Announcements, AWS Backup, AWS CloudTrail, AWS IAM Identity Center, AWS Organizations, AWS reInforce, Featured, Launch, News, Security Identity Compliance, Storage]
 toc: true

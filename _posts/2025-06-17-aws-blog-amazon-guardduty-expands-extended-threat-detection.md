@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Amazon GuardDuty expands Extended Threat Detection coverage to Amazon EKS clusters"
-date: 2025-06-17T16:26:04.000Z
+date: 2025-06-17T00:26:04+08:00
 categories: [aws, news]
 tags: [Amazon Elastic Kubernetes Service, Amazon GuardDuty, Announcements, AWS reInforce, Featured, Launch, News, Security Identity Compliance]
 toc: true
