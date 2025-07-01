@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Publisher</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        textarea { height: 300px; resize: vertical; }
+        button { background: #007cba; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #005a87; }
+        .tags-input { height: 60px; }
+        .checkbox-group { display: flex; gap: 20px; }
+        .checkbox-group label { display: flex; align-items: center; font-weight: normal; }
+        .checkbox-group input { width: auto; margin-right: 8px; }
+    </style>
+</head>
+<body>
+    <h1>📝 Blog Publisher</h1>
+    <form id="blogForm">
+        <div class="form-group">
+            <label for="title">Title *</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="content">Content * (Markdown)</label>
+            <textarea id="content" name="content" required placeholder="# Your blog post content here...
+
+Write your content in Markdown format. You can use:
+- # Headers
+- **Bold text**
+- *Italic text*
+- [Links](https://example.com)
+- ![Images](image-url)
+- Code blocks with ```"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="categories">Categories (comma-separated)</label>
+            <input type="text" id="categories" name="categories" placeholder="aws, tutorial, devops">
+        </div>
+        
+        <div class="form-group">
+            <label for="tags">Tags (comma-separated)</label>
+            <textarea id="tags" name="tags" class="tags-input" placeholder="lambda, serverless, ec2, s3, cloudformation"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="toc" name="toc">
+                    Enable Table of Contents
+                </label>
+                <label>
+                    <input type="checkbox" id="math" name="math">
+                    Enable Math Formulas (MathJax)
+                </label>
+            </div>
+        </div>
+        
+        <button type="submit">🚀 Publish Blog Post</button>
+    </form>
+
+    <div id="result" style="margin-top: 20px; padding: 15px; border-radius: 4px; display: none;"></div>
+
+    <script>
+        document.getElementById('blogForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                title: formData.get('title'),
+                content: formData.get('content'),
+                categories: formData.get('categories').split(',').map(s => s.trim()).filter(s => s),
+                tags: formData.get('tags').split(',').map(s => s.trim()).filter(s => s),
+                toc: formData.get('toc') === 'on',
+                math: formData.get('math') === 'on'
+            };
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '⏳ Publishing...';
+            resultDiv.style.background = '#f0f8ff';
+            resultDiv.style.color = '#333';
+            
+            try {
+                const response = await fetch('YOUR_N8N_WEBHOOK_URL', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer YOUR_WEBHOOK_TOKEN'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `✅ Success! Blog post "${result.title}" published successfully. <br>
+                                         Visit: <a href="${result.url}" target="_blank">${result.url}</a>`;
+                    resultDiv.style.background = '#d4edda';
+                    resultDiv.style.color = '#155724';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.message || 'Publication failed');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.color = '#721c24';
+            }
+        });
+    </script>
+</body>
+</html>
