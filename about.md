@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-# About AWS-YZ Blog
+# About YZ's Blog
 
 This blog is dedicated to sharing knowledge and insights about Amazon Web Services (AWS) and cloud computing technologies.
 
