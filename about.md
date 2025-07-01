@@ -26,6 +26,3 @@ I'm passionate about cloud technologies, DevOps practices, and helping others le
 
 Feel free to reach out if you have questions, suggestions, or would like to collaborate on cloud-related topics.
 
----
-
-*This site is built with Jekyll and hosted on GitHub Pages.*

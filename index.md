@@ -16,6 +16,3 @@ Stay tuned for upcoming posts about:
 - Serverless computing
 - Infrastructure as Code
 
----
-
-*This site is powered by Jekyll and hosted on GitHub Pages.*
