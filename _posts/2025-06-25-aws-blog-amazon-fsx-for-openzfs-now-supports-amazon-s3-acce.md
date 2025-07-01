@@ -14,7 +14,7 @@ image: /assets/images/banners/2025-06-25-aws-blog-amazon-fsx-for-openzfs-now-sup
 
 # Amazon FSx for OpenZFS now supports Amazon S3 access without any data movement
 
-![Amazon FSx for OpenZFS now supports Amazon S3 access without any data movement](/assets/images/banners/2025-06-25-aws-blog-amazon-fsx-for-openzfs-now-supports-amazon-s3-acce.jpg "Amazon FSx for OpenZFS now supports Amazon S3 access without any data movement")
+![Amazon FSx for OpenZFS now supports Amazon S3 access without any data movement](/assets/images/banners/2025-06-25-aws-blog-amazon-fsx-for-openzfs-now-supports-amazon-s3-acce.jpg"Amazon FSx for OpenZFS now supports Amazon S3 access without any data movement")
 
 > **原文链接**: [Amazon FSx for OpenZFS now supports Amazon S3 access without any data movement](https://aws.amazon.com/blogs/aws/amazon-fsx-for-openzfs-now-supports-amazon-s3-access-without-any-data-movement/)
 > **作者**: Elizabeth Fuentes
