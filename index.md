@@ -1,9 +1,9 @@
 ---
 layout: home
-title: Welcome to AWS-YZ Blog
+title: Welcome to YZ's Blog
 ---
 
-# Welcome to AWS-YZ Blog
+# Welcome to YZ's Blog
 
 This is a blog about AWS and cloud technologies. Here you'll find tutorials, tips, and insights about cloud computing, DevOps, and modern software development practices.
 
