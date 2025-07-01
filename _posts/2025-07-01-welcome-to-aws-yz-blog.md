@@ -7,7 +7,7 @@ tags: [aws, cloud, introduction, welcome]
 toc: true
 ---
 
-# Welcome to YZ's Blog!
+# 👋 Welcome to YZ's Blog!
 
 Hello and welcome to my new blog about AWS and cloud technologies! 
 

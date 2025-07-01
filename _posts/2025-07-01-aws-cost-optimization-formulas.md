@@ -8,7 +8,7 @@ math: true
 toc: true
 ---
 
-# AWS Cost Optimization: Mathematical Models and Formulas
+# 💰 AWS Cost Optimization: Mathematical Models and Formulas
 
 Understanding the mathematical foundations behind AWS cost optimization can help you make better decisions about resource allocation and scaling strategies.
 
