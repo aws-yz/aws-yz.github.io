@@ -9,9 +9,8 @@ url: "https://blog.ifyz.wang"
 # Build settings
 markdown: kramdown
 highlighter: rouge
-future: true  # 允许显示未来日期的文章（以防万一）
-show_excerpts: true  # 在首页显示文章摘要
 future: true  # 允许显示未来日期的文章
+show_excerpts: true  # 在首页显示文章摘要
 timezone: Asia/Shanghai  # 设置时区
 
 # Hamilton theme settings
@@ -29,8 +28,8 @@ paginate: 10
 paginate_path: "/page:num/"
 
 # Hamilton specific settings
-skin:  # Options: daylight, midnight, sunrise, sunset (or leave empty for auto)
-date_format: "%b %-d, %Y"
+skin: daylight  # 推荐使用 daylight 获得最佳可读性
+date_format: "%Y年%m月%d日"  # 中文日期格式更友好
 subscribe: true
 
 # Social links

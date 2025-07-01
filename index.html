@@ -1,20 +1,52 @@
 ---
 layout: home
-title: Welcome to YZ's Blog
+title: YZ's AWS & Cloud Technology Blog
 ---
 
-<div class="welcome-section">
-  <h1>Welcome to YZ's Blog</h1>
-  <p>This is a blog about AWS and cloud technologies. Here you'll find tutorials, tips, and insights about cloud computing, DevOps, and modern software development practices.</p>
-  
-  <h2>Topics I Cover</h2>
-  <ul>
-    <li>AWS services and best practices</li>
-    <li>Cloud architecture patterns</li>
-    <li>DevOps tools and techniques</li>
-    <li>Serverless computing</li>
-    <li>Infrastructure as Code</li>
-  </ul>
+<div class="hero-section" style="text-align: center; padding: 2rem 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; margin-bottom: 2rem;">
+  <h1 style="font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">☁️ Welcome to YZ's Blog</h1>
+  <p style="font-size: 1.2rem; margin-bottom: 1.5rem; opacity: 0.9;">Exploring AWS and Cloud Technologies</p>
+  <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+    <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">🚀 AWS Expert</span>
+    <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">⚡ DevOps</span>
+    <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">🏗️ Cloud Architecture</span>
+  </div>
+</div>
+
+<div class="intro-section" style="background: #f8f9fa; padding: 2rem; border-radius: 10px; margin-bottom: 2rem; border-left: 4px solid #007cba;">
+  <h2 style="color: #333; margin-bottom: 1rem;">📚 What You'll Find Here</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+    <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+      <h3 style="color: #007cba; margin-bottom: 0.5rem;">🔧 AWS Services</h3>
+      <p style="color: #666; font-size: 0.9rem;">深入解析 AWS 各项服务的最佳实践和使用技巧</p>
+    </div>
+    <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+      <h3 style="color: #007cba; margin-bottom: 0.5rem;">🏛️ Architecture</h3>
+      <p style="color: #666; font-size: 0.9rem;">云架构设计模式和可扩展解决方案</p>
+    </div>
+    <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+      <h3 style="color: #007cba; margin-bottom: 0.5rem;">⚡ DevOps</h3>
+      <p style="color: #666; font-size: 0.9rem;">现代化开发运维工具和自动化流程</p>
+    </div>
+  </div>
+</div>
+
+<div class="stats-section" style="text-align: center; padding: 1.5rem; background: #fff; border-radius: 10px; margin-bottom: 2rem; box-shadow: 0 2px 15px rgba(0,0,0,0.1);">
+  <h2 style="color: #333; margin-bottom: 1rem;">📊 Blog Statistics</h2>
+  <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+    <div>
+      <div style="font-size: 2rem; font-weight: bold; color: #007cba;">{{ site.posts | size }}</div>
+      <div style="color: #666; font-size: 0.9rem;">Total Posts</div>
+    </div>
+    <div>
+      <div style="font-size: 2rem; font-weight: bold; color: #28a745;">{{ site.categories | size }}</div>
+      <div style="color: #666; font-size: 0.9rem;">Categories</div>
+    </div>
+    <div>
+      <div style="font-size: 2rem; font-weight: bold; color: #ffc107;">{{ site.tags | size }}</div>
+      <div style="color: #666; font-size: 0.9rem;">Tags</div>
+    </div>
+  </div>
 </div>
 
 <!-- Hamilton 主题会在这里自动插入最近的文章列表 -->

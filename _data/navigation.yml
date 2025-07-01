@@ -1,10 +1,18 @@
-- title: Home
+- title: 🏠 Home
   url: /
-- title: About
-  url: /about/
-- title: Categories
+- title: 📚 Categories
   url: /categories/
-- title: Tags
+- title: 🏷️ Tags
   url: /tags/
-- title: Archive
+- title: 📅 Archive
   url: /archive/
+- title: 👨‍💻 About
+  url: /about/
+- title: 📖 Resources
+  sublinks:
+    - title: AWS Documentation
+      url: https://docs.aws.amazon.com/
+    - title: AWS Blog
+      url: https://aws.amazon.com/blogs/
+    - title: AWS Training
+      url: https://aws.amazon.com/training/
