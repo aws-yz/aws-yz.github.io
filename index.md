@@ -1,6 +1,6 @@
 ---
 layout: home
-title: Welcome to YZ's Blog
+title: Welcome
 ---
 
 # Welcome to YZ's Blog
