@@ -5,6 +5,7 @@ _site/
 vendor/
 .bundle/
 Gemfile.lock
+blog_write_guide.md
 
 # macOS
 .DS_Store
