@@ -1,0 +1,1030 @@
+{
+  "name": "Publish-blog",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://aws.amazon.com/blogs/aws/feed/",
+        "options": {}
+      },
+      "id": "d7c145fa-86cf-4005-92fb-cea60874f60a",
+      "name": "AWS博客RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -420
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please review this paragraph  {{ $json[\"content:encoded\"] }} and give a summary in Chinese.\nYour output must be a single-line, compact JSON object with the following fields:\nof the blog in below format:\n{\n    \"title\": \"{{ $json.title }}\",\n\t\"summary\": \"[Chinese summary]\",\n    \"link\": {{ $json.link }}\",\n\t\"Author\": [{{ $json.creator }}],\n    \"Publish date\" : \"{{ $json.pubDate }}\",\n    \"Tag\": [{{ $json.categories }}]\n}\nStrict requirements:\n\nThe summary must be in Chinese.\n1. leave  \"title\": \"{{ $json.title }}\", \"link\": {{ $json.link }}\", \"Author\": [{{ $json.creator }}], \"Publish date\" : \"{{ $json.pubDate }}\", \"Tag\": [{{ $json.categories }}] as they are, you ONLY add SUMMARY field in Chinese.\n2.All double quotes inside field values must be properly escaped (use \\\" for any quote inside a value).\n3.Do not add any fields or text before or after the JSON object.\n4.The JSON must be valid and directly parsable.\nExample output:\njson\n{\n    \"title\": \"Amazon Q Developer elevates the IDE experience with new agentic coding experience\",\n\t\"summary\": \"Amazon Q Developer新的agernt开发能力提升IDE开发体验\",\n    \"link\": \"https://aws.amazon.com/blogs/aws/amazon-q-developer-elevates-the-ide-experience-with-new-agentic-coding-experience/\",\n\t\"Author\": [Elizabeth Fuentes],\n    \"Publish date\": \"Fri, 02 May 2025 16:02:26 +0000\",\n\"Tag\": [\"Amazon FSx\", \"Amazon Simple Storage Service(S3)\",\"Announcements\", \"Featured\", \"Launch\", \"News\", \"Storage\"]\n}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a helpful assistant adept at summary AWS Blogs"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1140,
+        100
+      ],
+      "id": "fd74d6dd-7595-4965-8ffc-07af2af8129d",
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"summary\": \"California\",\n\t\"Author\": [\"Andy Jassy\", \"Yunzhang Wang\"],\n    \"Publish date\" : \"05-03-2025\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1300,
+        340
+      ],
+      "id": "5dbe8530-c218-4fdb-9971-b1a1920b9a43",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAwsBedrock",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        340
+      ],
+      "id": "318e1b1e-0ba7-4a4c-83f1-60e3920d9b93",
+      "name": "BR Claude 3.5 V2",
+      "credentials": {
+        "aws": {
+          "id": "n8YqdB3Oen3tpxH2",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1160,
+        -140
+      ],
+      "id": "40c3a828-dad7-4476-b716-0913fd28f3bb",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        860,
+        80
+      ],
+      "id": "2d8bd07f-acab-4115-9773-fac791da1c60",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2120,
+        100
+      ],
+      "id": "451a0e53-2336-4741-b88a-769530793cfb",
+      "name": "Wait",
+      "webhookId": "afff01d0-4cd7-49b6-883e-44071121a97f"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9fa73ce6-5a0e-441f-ac05-e2e70152c81a",
+              "leftValue": "={{ $json.categories }}",
+              "rightValue": "=Featured",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            },
+            {
+              "id": "28458597-c2a3-4b80-a400-ddfc061e07e8",
+              "leftValue": "={{ $json.categories }}",
+              "rightValue": "Launch",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            },
+            {
+              "id": "fc785a51-f424-4dd3-96fe-b41bf77b709c",
+              "leftValue": "={{ $json.categories }}",
+              "rightValue": "Week in Review",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        200,
+        -520
+      ],
+      "id": "94542f51-4bd0-4ec2-9dbd-8fc443913462",
+      "name": "关键字过滤"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/aws-yz/aws-yz.github.io/contents/{{$json.filePath}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "n8n-aws-blog-publisher"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{$json.commitMessage}}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.content.base64Encode() }}"
+            },
+            {
+              "name": "branch",
+              "value": "main"
+            },
+            {
+              "name": "committer",
+              "value": "={{ { \"name\": \"n8n bot\", \"email\": \"wangyz180@gmail.com\" } }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1680,
+        100
+      ],
+      "id": "4472f3a4-9326-4ecc-9336-82e932af3706",
+      "name": "githubAPI",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "QX3HCT229pUyaCDm",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 简化版汇总统计节点代码\nconst results = $input.all();\n\nconsole.log('=== AWS Blog Publishing Summary (Simplified) ===');\nconsole.log(`处理 ${results.length} 个项目`);\n\nlet published = 0;\nlet skipped = 0;\nlet errors = 0;\n\nconst publishedArticles = [];\nconst failedArticles = [];\n\nresults.forEach((result, index) => {\n  const data = result.json;\n  const status = data.status;\n\n  if (status === 'published') {\n    published++;\n    publishedArticles.push({\n      fileName: data.fileName || 'unknown',\n      title: data.title || 'Unknown Title',\n      emoji: data.emoji || '☁️',\n      commitSha: data.commitSha || 'unknown',\n      githubUrl: data.githubFileUrl || '',\n      timestamp: data.timestamp || new Date().toISOString()\n    });\n  } else if (status === 'skipped') {\n    skipped++;\n    failedArticles.push({\n      status: 'skipped',\n      fileName: data.fileName || 'unknown',\n      error: data.error || 'skipped'\n    });\n  } else if (status === 'error') {\n    errors++;\n    failedArticles.push({\n      status: 'error',\n      fileName: data.fileName || 'unknown',\n      error: data.error || 'unknown error'\n    });\n  }\n});\n\nconst summary = {\n  total: results.length,\n  published: published,\n  skipped: skipped,\n  errors: errors,\n  success_rate: results.length > 0 ?\n    ((published / results.length) * 100).toFixed(1) + '%' : '0%',\n  timestamp: new Date().toISOString(),\n  published_articles: publishedArticles,\n  failed_articles: failedArticles\n};\n\nlet message = '';\nif (errors > 0) {\n  message = `❌ ${errors} 篇处理失败`;\n  if (published > 0) {\n    message += `，${published} 篇成功发布`;\n  }\n} else if (published > 0) {\n  message = `✅ 成功发布 ${published} 篇 AWS 博客摘要`;\n} else {\n  message = `ℹ️ 本次运行无新文章发布`;\n}\n\nif (skipped > 0) {\n  message += `，跳过 ${skipped} 篇`;\n}\n\nconsole.log(`总处理: ${summary.total} 个项目`);\nconsole.log(`成功发布: ${published} 个`);\nconsole.log(`跳过: ${skipped} 个`);\nconsole.log(`错误: ${errors} 个`);\nconsole.log(`成功率: ${summary.success_rate}`);\n\nreturn {\n  ...summary,\n  message: message,\n  blog_url: 'https://blog.ifyz.wang'\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        -180
+      ],
+      "id": "6743cad5-bbd2-4d77-94bf-4031aa6fc2b5",
+      "name": "汇总统计"
+    },
+    {
+      "parameters": {
+        "jsCode": "const summary = $json;\n\nif (summary.published > 0) {\n  return {\n    message: `✅ 成功发布 ${summary.published} 篇 AWS 博客摘要`,\n    details: `总计: ${summary.total}, 发布: ${summary.published}, 跳过: ${summary.skipped}, 错误: ${summary.errors}`,\n    url: 'https://blog.ifyz.wang'\n  };\n}\n\nreturn {\n  message: `ℹ️ 本次运行无新文章发布`,\n  details: `总计: ${summary.total}, 跳过: ${summary.skipped}, 错误: ${summary.errors}`\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        -180
+      ],
+      "id": "d6942b29-0ddc-49ca-889c-ed6a722b719c",
+      "name": "通知"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 简化版转换节点代码 - 移除图片功能\nconst item = $json.output;\n\n// 基本格式验证\nif (!item || !item.title || !item.summary || !item.link) {\n  throw new Error('Missing required fields: title, summary, or link');\n}\n\n// 检查内容质量\nif (item.summary.length < 50) {\n  throw new Error('Summary too short (minimum 50 characters)');\n}\n\n// 生成文件名友好的 slug\nfunction createSlug(title) {\n  return title\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s-]/g, '')\n    .replace(/\\s+/g, '-')\n    .replace(/-+/g, '-')\n    .trim('-')\n    .substring(0, 50);\n}\n\n// 处理日期\nconst publishDate = new Date(item[\"Publish date\"]);\nconst dateStr = publishDate.toISOString().split('T')[0];\nconst isoDateTime = publishDate.toISOString().replace('Z', '+00:00');\n\n// 生成文件名\nconst slug = createSlug(item.title);\nconst fileName = `${dateStr}-aws-blog-${slug}.md`;\n\n// 处理分类和标签\nfunction generateCategories(tags) {\n  const categoryMap = {\n    'storage': ['s3', 'simple storage service', 'fsx', 'efs', 'storage'],\n    'compute': ['lambda', 'ec2', 'fargate', 'batch', 'graviton'],\n    'database': ['rds', 'dynamodb', 'elasticache', 'redshift'],\n    'ai-ml': ['generative ai', 'machine learning', 'bedrock', 'sagemaker'],\n    'networking': ['vpc', 'cloudfront', 'route 53', 'load balancer'],\n    'developer-tools': ['codecommit', 'codebuild', 'codepipeline', 'open source'],\n    'security': ['guardduty', 'shield', 'security hub', 'certificate manager', 'backup'],\n    'news': ['announcements', 'launch', 'news', 'week in review']\n  };\n\n  const detectedCategories = new Set(['aws']);\n\n  tags.forEach(tag => {\n    const tagLower = tag.toLowerCase();\n    Object.entries(categoryMap).forEach(([category, keywords]) => {\n      if (keywords.some(keyword => tagLower.includes(keyword))) {\n        detectedCategories.add(category);\n      }\n    });\n  });\n\n  return Array.from(detectedCategories).slice(0, 4);\n}\n\nfunction cleanTags(tags) {\n  return tags.map(tag => {\n    return tag\n      .replace(/[^\\w\\s()-]/g, '')\n      .replace(/\\s+/g, ' ')\n      .trim();\n  }).filter(tag => tag.length > 0);\n}\n\nconst categories = generateCategories(item.Tag || []);\nconst tags = cleanTags(item.Tag || []);\n\n// 🎯 选择合适的emoji\nfunction getEmojiForCategory(categories) {\n  const emojiMap = {\n    'storage': '💾',\n    'compute': '⚡',\n    'database': '🗄️',\n    'ai-ml': '🤖',\n    'networking': '🌐',\n    'security': '🛡️',\n    'developer-tools': '🔧',\n    'news': '📰'\n  };\n\n  // 选择第一个非aws分类的emoji\n  const primaryCategory = categories.find(cat => cat !== 'aws');\n  return emojiMap[primaryCategory] || '☁️';\n}\n\nconst emoji = getEmojiForCategory(categories);\n\n// 🎨 使用简化模板生成内容\nconst enhancedContent = `# ${emoji} ${item.title}\n\n> **原文链接**: [${item.title}](${item.link})\n> **作者**: ${(item.Author || []).join(', ')}\n> **发布日期**: ${publishDate.toISOString().replace('T', ' ').replace('.000Z', ' UTC')}\n\n## 📋 内容摘要\n\n${item.summary}\n\n## 🔗 相关信息\n\n这是来自 AWS 官方博客的最新资讯摘要。点击上方原文链接查看完整内容和技术细节。\n\n### 🏷️ 涉及的 AWS 服务和主题\n\n${(item.Tag || []).map(tag => `- **${tag}**`).join('\\n')}\n\n## 📚 延伸阅读\n\n- [AWS 官方文档](https://docs.aws.amazon.com/)\n- [AWS 架构中心](https://aws.amazon.com/architecture/)\n- [AWS 最佳实践](https://aws.amazon.com/architecture/well-architected/)\n\n---\n\n*本文为 AWS 官方博客内容摘要，完整内容请访问原文链接。版权归原作者所有。*`;\n\n// 生成完整的 Markdown 文件（简化版）\nconst frontMatter = `---\nlayout: post\ntitle: \"${item.title}\"\ndate: ${isoDateTime}\ncategories: [${categories.join(', ')}]\ntags: [${tags.join(', ')}]\ntoc: true\nmath: false\nauthor: \"AWS Blog 摘要\"\noriginal_author: \"${(item.Author || []).join(', ')}\"\noriginal_link: \"${item.link}\"\n---\n\n${enhancedContent}`;\n\nreturn {\n  fileName: fileName,\n  filePath: `_posts/${fileName}`,\n  content: frontMatter,\n  commitMessage: `Add AWS blog summary: ${item.title}`,\n  title: item.title,\n  originalLink: item.link,\n  publishDate: dateStr,\n  categories: categories,\n  tags: tags,\n  contentValid: true,\n  emoji: emoji\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1500,
+        100
+      ],
+      "id": "ec54341e-4290-4b27-9b1f-723637bbacc0",
+      "name": "转换成github API需要的参数"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 修复版 n8n-enhanced-result 节点代码\nconst input = $json;\n\n// 检查是否是GitHub API的成功响应\nif (input.content && input.commit) {\n  // 这是GitHub API的成功响应\n  return {\n    status: 'published',\n\n    // 文件信息\n    fileName: input.content.name || 'unknown',\n    filePath: input.content.path || '',\n    fileSize: input.content.size || 0,\n    commitSha: input.commit.sha ? input.commit.sha.substring(0, 8) : 'unknown',\n    commitMessage: input.commit.message || '',\n    githubFileUrl: input.content.html_url || '',\n    githubCommitUrl: input.commit.html_url || '',\n\n    // 统计信息\n    filesCommitted: 1,\n    articleSuccess: true,\n\n    // 从commit message中提取标题（如果可能）\n    title: input.commit.message ?\n      input.commit.message.replace('Add AWS blog summary: ', '') : 'Unknown Title',\n\n    // 基本信息\n    blogUrl: 'https://blog.ifyz.wang',\n    timestamp: input.commit.author?.date || new Date().toISOString(),\n\n    // 成功标识\n    success: true,\n    extractedTitle: input.commit.message ?\n      input.commit.message.replace('Add AWS blog summary: ', '') : 'Unknown Title'\n  };\n}\n\n// 检查是否是错误响应\nif (input.error || input.message) {\n  return {\n    status: 'error',\n    error: input.error || input.message || 'GitHub API error',\n    fileName: 'unknown',\n    title: 'Unknown',\n    timestamp: new Date().toISOString(),\n    filesCommitted: 0,\n    articleSuccess: false\n  };\n}\n\n// 检查是否有明确的status字段（保持向后兼容）\nif (input.status) {\n  if (input.status === 'published') {\n    return {\n      status: 'published',\n      fileName: input.fileName || 'unknown',\n      filePath: input.filePath || '',\n      fileSize: input.fileSize || 0,\n      commitSha: input.commitSha || 'unknown',\n      commitMessage: input.commitMessage || '',\n      githubFileUrl: input.githubFileUrl || '',\n      githubCommitUrl: input.githubCommitUrl || '',\n      filesCommitted: input.filesCommitted || 1,\n      articleSuccess: input.articleSuccess || true,\n      title: input.title || 'Unknown Title',\n      categories: input.categories || [],\n      tags: input.tags || [],\n      emoji: input.emoji || '☁️',\n      timestamp: input.timestamp || new Date().toISOString(),\n      success: true\n    };\n  }\n\n  if (input.status === 'error') {\n    return {\n      status: 'error',\n      error: input.error || 'Unknown error',\n      fileName: input.fileName || 'unknown',\n      title: input.title || 'Unknown',\n      timestamp: input.timestamp || new Date().toISOString(),\n      filesCommitted: 0,\n      articleSuccess: false\n    };\n  }\n}\n\n// 如果都不匹配，返回未知状态（这种情况不应该发生）\nconsole.log('Unexpected input format:', JSON.stringify(input, null, 2));\nreturn {\n  status: 'unknown',\n  error: 'Unexpected response format from GitHub API',\n  timestamp: new Date().toISOString(),\n  filesCommitted: 0,\n  articleSuccess: false,\n  debug_input: input\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        100
+      ],
+      "id": "38d7d9c8-e3b4-4cef-8ec7-4c6b4c3930fa",
+      "name": "n8n-enhanced-result"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        520,
+        -200
+      ],
+      "id": "5f79269e-7c0c-4696-a0f5-886a2a9c17a9",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "url": "https://aws.amazon.com/blogs/aws-insights/feed/",
+        "options": {}
+      },
+      "id": "84f29540-7093-4ade-996d-9ec2f00a3082",
+      "name": "aws-insights",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://aws.amazon.com/blogs/gametech/feed/",
+        "options": {}
+      },
+      "id": "ac691277-af0d-4631-baea-651a9b612b9b",
+      "name": "gametech",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// initialize staticData object\nconst workflowStaticData = $getWorkflowStaticData('global');\n\n// initialize aws blog timestamp on staticData if it desn't exist yet\nif (!workflowStaticData.hasOwnProperty('awsblog_timestamp')) {\n  //workflowStaticData.awsblog_timestamp = $now.toISO()\n  workflowStaticData.awsblog_timestamp = DateTime.fromFormat(\"2025-06-25 18:08:29 UTC\", \"yyyy-MM-dd HH:mm:ss z\")\n}\n\n// initializing aws insights blog timestamp variables on the staticData object\nif (!workflowStaticData.hasOwnProperty('awsinsights_timestamp')) {\n  //workflowStaticData.awsinsights_timestamp = $now.toISO()\n  workflowStaticData.awsinsights_timestamp = DateTime.fromFormat(\"2025-06-25 18:08:29 UTC\", \"yyyy-MM-dd HH:mm:ss z\")\n}\n\n// initializing aws gaming blog timestamp variables on the staticData object\nif (!workflowStaticData.hasOwnProperty('gametech_timestamp')) {\n  //workflowStaticData.gametech_timestamp = $now.toISO()\n  workflowStaticData.gametech_timestamp = DateTime.fromFormat(\"2025-06-25 18:08:29 UTC\", \"yyyy-MM-dd HH:mm:ss z\")\n}\nreturn [\n  {\n      // data: $input.all(),\n      awsblog_timestamp: workflowStaticData.awsblog_timestamp,\n      awsinsights_timestamp: workflowStaticData.awsinsights_timestamp,\n      gametech_timestamp: workflowStaticData.gametech_timestamp\n      // today: $today\n  }\n];"
+      },
+      "id": "b1b631c0-b1e5-428f-ac66-df69c754c790",
+      "name": "1. initiate static data",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -880,
+        -140
+      ],
+      "notesInFlow": false,
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowStaticData = $getWorkflowStaticData('global');\n\n// get new access token\n//workflowStaticData.accessToken = $input.first().json.AccessToken;\n// set  awsblog_timestamp\n//workflowStaticData.awsblog_timestamp = $now.toISO().toString();\n\nreturn [\n  {\n    awsblog_timestamp: workflowStaticData.awsblog_timestamp\n    // today: $today\n  }\n];"
+      },
+      "id": "c5da847f-257a-481f-baf4-984f2bc3f1e2",
+      "name": "getLastrunStamp",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -520,
+        -580
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowStaticData = $getWorkflowStaticData('global');\n\n// get new access token\n//workflowStaticData.accessToken = $input.first().json.AccessToken;\n// set  awsblog_timestamp\n//workflowStaticData.awsblog_timestamp = $now.toISO().toString();\n\nreturn [\n  {\n    awsinsights_timestamp: workflowStaticData.awsinsights_timestamp\n    // today: $today\n  }\n];"
+      },
+      "id": "36d4928d-6920-45d5-8629-5bd1bfa4d740",
+      "name": "getLastrunStamp1",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -520,
+        -260
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowStaticData = $getWorkflowStaticData('global');\n\n// get new access token\n//workflowStaticData.accessToken = $input.first().json.AccessToken;\n// set  awsblog_timestamp\n//workflowStaticData.awsblog_timestamp = $now.toISO().toString();\n\nreturn [\n  {\n    gametech_timestamp: workflowStaticData.gametech_timestamp\n    // today: $today\n  }\n];"
+      },
+      "id": "47748c6d-ecac-41ac-abae-c5830af8f46d",
+      "name": "getLastrunStamp2",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -520,
+        40
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dcea4904-cd08-4ba9-ad4d-7afd85b0eeb8",
+              "leftValue": "={{  $json.isoDate }}",
+              "rightValue": "={{ $json.awsinsights_timestamp }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -80,
+        -200
+      ],
+      "id": "7b5eedb3-ed0f-40a4-9b5c-f7fcd93315db",
+      "name": "Filter1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dcea4904-cd08-4ba9-ad4d-7afd85b0eeb8",
+              "leftValue": "={{  $json.isoDate }}",
+              "rightValue": "={{ $json.awsblog_timestamp }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        -520
+      ],
+      "id": "be918199-4622-47f3-a345-e464e113549a",
+      "name": "sinceLstRun"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -240,
+        -520
+      ],
+      "id": "573185bb-0e52-472d-b599-0bdffeba1e99",
+      "name": "outJoin"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -260,
+        -200
+      ],
+      "id": "1c709d8e-8c4a-4ad0-9b0c-d7fda3f9f4cc",
+      "name": "outJoin2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -280,
+        100
+      ],
+      "id": "4c139057-af2b-4c84-8a3d-9007beea7ee6",
+      "name": "outJoin3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dcea4904-cd08-4ba9-ad4d-7afd85b0eeb8",
+              "leftValue": "={{  $json.isoDate }}",
+              "rightValue": "={{ $json.gametech_timestamp }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -80,
+        100
+      ],
+      "id": "ba81f069-34fc-4fdd-8340-74a329ef1b28",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowStaticData = $getWorkflowStaticData('global');\n\nworkflowStaticData.awsblog_timestamp = $('outJoin').first().json.isoDate;\nreturn [\n  {\n      awsblog_timestamp: workflowStaticData.awsblog_timestamp,\n      // today: $today\n  }\n];"
+      },
+      "id": "1cb1b503-1f15-42f6-8045-115df3b82b8d",
+      "name": "reset awsblog lastrunTime",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        200,
+        -680
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowStaticData = $getWorkflowStaticData('global');\n\nworkflowStaticData.awsinsights_timestamp = $('outJoin2').first().json.isoDate;\nreturn [\n  {\n      awsinsights_timestamp: workflowStaticData.awsinsights_timestamp,\n      // today: $today\n  }\n];"
+      },
+      "id": "dab2089e-0083-4b71-bc73-37ca4261e1f9",
+      "name": "resetInsightsLastrunTime",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        200,
+        -340
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowStaticData = $getWorkflowStaticData('global');\n\nworkflowStaticData.gametech_timestamp = $('outJoin3').first().json.isoDate;\nreturn [\n  {\n      gametech_timestamp: workflowStaticData.gametech_timestamp,\n      // today: $today\n  }\n];"
+      },
+      "id": "be77aea0-dc5e-4c4e-bc1b-85cd40465a35",
+      "name": "resetGametechLastrunTime",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        200,
+        160
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "functionCode": "// 确保AI Agent输出是有效的JSON格式并直接构建飞书webhook消息\n// 处理每个输入项\nreturn items.map(item => {\n  // 检查输入项是否存在\n  if (!item || !item.json || !item.json.output) {\n    console.error('输入项无效或缺少output字段');\n    return item;\n  }\n\n  try {\n    // 获取AI Agent的输出\n    let output = item.json.output;\n    console.log('原始输出类型:', typeof output);\n    \n    // 如果输出是字符串，尝试解析为JSON对象\n    if (typeof output === 'string') {\n      try {\n        output = JSON.parse(output);\n        console.log('成功将字符串解析为JSON对象');\n      } catch (e) {\n        console.log('输出不是有效的JSON字符串，尝试修复...');\n        \n        // 尝试修复常见的JSON格式问题\n        let outputStr = output;\n        // 1. 处理字段值中未转义的双引号\n        outputStr = outputStr.replace(/([\\w\\s]+):\\s*\"([^\"]*)([^\\\\])\"([^,}]*)/g, '$1: \"$2$3\\\\\"$4');\n        // 2. 确保字段名称使用双引号\n        outputStr = outputStr.replace(/([{,])\\s*([\\w\\s]+):/g, '$1\"$2\":');\n        // 3. 移除可能的前导和尾随文本\n        outputStr = outputStr.replace(/^[^{]*({.*})[^}]*$/s, '$1');\n        \n        try {\n          output = JSON.parse(outputStr);\n          console.log('JSON格式修复成功');\n        } catch (e2) {\n          console.error('JSON格式修复失败，无法解析为对象:', e2.message);\n          // 创建一个基本对象，避免后续处理失败\n          output = {\n            title: '解析失败',\n            summary: '无法解析AI输出为有效JSON',\n            link: '',\n            Author: ['未知'],\n            'Publish date': ''\n          };\n        }\n      }\n    }\n    \n    // 确保我们有一个对象可以处理\n    if (typeof output !== 'object' || output === null) {\n      console.error('输出不是对象类型');\n      output = {\n        title: '类型错误',\n        summary: '输出不是有效的对象类型',\n        link: '',\n        Author: ['未知'],\n        'Publish date': ''\n      };\n    }\n    \n    // 提取所需字段，处理可能的undefined值\n    const title = output.title || '';\n    \n    // 处理Author字段，确保它是数组并且可以安全地join\n    let authors = '';\n    if (output.Author) {\n      if (Array.isArray(output.Author)) {\n        authors = output.Author.join(', ');\n      } else {\n        authors = String(output.Author);\n      }\n    }\n    \n    // 处理发布日期，考虑不同的可能字段名\n    const publishDate = output['Publish date'] || output['publish date'] || '';\n    \n    // 处理摘要\n    const summary = output.summary || '';\n    \n    // 处理链接，移除空白\n    const link = output.link ? String(output.link).replace(/\\s+/g, '') : '';\n    \n    // 直接构建飞书webhook所需的完整消息格式\n    const feishuMessage = {\n      msg_type: \"text\",\n      content: {\n        text: `<at user_id=\"all\"></at> \\n 标题：${title} \\n 作者：${authors} \\n 发布日期：${publishDate} \\n 摘要：${summary}\\n Blog链接：${link}`\n      }\n    };\n    \n    // 保存原始AI输出，以防后续需要\n    item.json.originalOutput = output;\n    \n    // 将飞书消息格式设置为输出\n    item.json.output = feishuMessage;\n    \n    // 验证最终输出是否为有效JSON\n    try {\n      const finalJson = JSON.stringify(feishuMessage);\n      console.log('飞书消息格式验证成功');\n    } catch (e) {\n      console.error('飞书消息格式验证失败:', e.message);\n    }\n    \n    return item;\n  } catch (error) {\n    console.error('处理过程中发生错误:', error.message);\n    // 确保即使出错也返回一个有效的项\n    if (!item.json.output) {\n      item.json.output = {\n        msg_type: \"text\",\n        content: {\n          text: \"<at user_id=\\\"all\\\"></at> \\n 处理AI输出时发生错误，请检查日志。\"\n        }\n      };\n    }\n    return item;\n  }\n});"
+      },
+      "id": "0eadf2d5-f94c-4bb0-8b99-214bc729045c",
+      "name": "格式化JSON输出",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://open.feishu.cn/open-apis/bot/v2/hook/65ea1ede-d1ee-4241-ad9f-396de2119630",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.output }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 2,
+              "batchInterval": 2000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1940,
+        -300
+      ],
+      "id": "75af9024-ff21-467a-8775-816703e99c3c",
+      "name": "WE-gaming",
+      "executeOnce": false,
+      "notesInFlow": false,
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://open.feishu.cn/open-apis/bot/v2/hook/457f06ec-1976-4e09-b1a0-f1fad6d355f5",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.output }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 2
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1680,
+        -120
+      ],
+      "id": "b318b8e4-e4bb-41a9-9213-cdf097e7bcd3",
+      "name": "我的飞书机器人",
+      "executeOnce": true,
+      "notesInFlow": false,
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AWS博客RSS": {
+      "main": [
+        [
+          {
+            "node": "outJoin",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "转换成github API需要的参数",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "格式化JSON输出",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BR Claude 3.5 V2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "1. initiate static data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "汇总统计",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "关键字过滤": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "githubAPI": {
+      "main": [
+        [
+          {
+            "node": "n8n-enhanced-result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "汇总统计": {
+      "main": [
+        [
+          {
+            "node": "通知",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "转换成github API需要的参数": {
+      "main": [
+        [
+          {
+            "node": "githubAPI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n-enhanced-result": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "aws-insights": {
+      "main": [
+        [
+          {
+            "node": "outJoin2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "gametech": {
+      "main": [
+        [
+          {
+            "node": "outJoin3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "1. initiate static data": {
+      "main": [
+        [
+          {
+            "node": "AWS博客RSS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "aws-insights",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "gametech",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "getLastrunStamp",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "getLastrunStamp1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "getLastrunStamp2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLastrunStamp": {
+      "main": [
+        [
+          {
+            "node": "outJoin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLastrunStamp1": {
+      "main": [
+        [
+          {
+            "node": "outJoin2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLastrunStamp2": {
+      "main": [
+        [
+          {
+            "node": "outJoin3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "outJoin": {
+      "main": [
+        [
+          {
+            "node": "sinceLstRun",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "outJoin2": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "outJoin3": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sinceLstRun": {
+      "main": [
+        [
+          {
+            "node": "reset awsblog lastrunTime",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "关键字过滤",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "resetInsightsLastrunTime",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "resetGametechLastrunTime",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "reset awsblog lastrunTime": {
+      "main": [
+        []
+      ]
+    },
+    "resetInsightsLastrunTime": {
+      "main": [
+        []
+      ]
+    },
+    "格式化JSON输出": {
+      "main": [
+        [
+          {
+            "node": "我的飞书机器人",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "77fc775c-58de-48f0-8fcf-e468982e7014",
+  "meta": {
+    "instanceId": "1695578057efcaddd552e4313ab52e3553fb9edb5139398210a9506c188cb8a6"
+  },
+  "id": "88IXZJwnPWJ7DtGF",
+  "tags": []
+}
