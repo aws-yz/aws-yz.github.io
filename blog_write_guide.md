@@ -194,6 +194,90 @@ grep -h "categories:" _posts/*.md | sort | uniq -c
 grep -L "title:" _posts/*.md
 ```
 
+## 🤖 n8n 自动化发布系统
+
+### **当前自动化能力**
+项目已集成完整的 n8n 自动化工作流，具备以下功能：
+
+#### **多源RSS监控**
+- **AWS 官方博客**: `https://aws.amazon.com/blogs/aws/feed/`
+- **AWS Insights**: `https://aws.amazon.com/blogs/aws-insights/feed/`
+- **AWS GameTech**: `https://aws.amazon.com/blogs/gametech/feed/`
+- **AWS ML博客**: `https://aws.amazon.com/blogs/machine-learning/feed/`
+
+#### **智能内容处理**
+- **AI摘要生成**: 使用 Claude 3.5 Sonnet V2 生成中文摘要
+- **内容过滤**: 自动筛选 "Featured"、"Launch"、"Week in Review" 标签
+- **分类标记**: 自动添加RSS源前缀标识
+  - `[AWS Blog]` - AWS官方博客
+  - `[AWS Insights]` - AWS Insights博客
+  - `[AWS GameTech]` - 游戏技术博客
+  - `[ML]` - 机器学习博客
+
+#### **自动发布流程**
+1. **RSS监控** → 定期检查新文章
+2. **时间戳管理** → DynamoDB存储最后处理时间
+3. **AI处理** → 生成中文摘要和元数据
+4. **GitHub发布** → 自动创建Markdown文件并提交
+5. **通知推送** → 飞书机器人通知发布结果
+
+### **n8n工作流配置要点**
+
+#### **关键节点说明**
+- **AI Agent**: 使用结构化输出解析器确保JSON格式正确
+- **GitHub API**: 自动提交到 `_posts/` 目录
+- **DynamoDB**: 管理RSS时间戳，避免重复处理
+- **飞书通知**: 实时推送发布状态
+
+#### **文件命名规范**
+自动化系统生成的文件遵循以下格式：
+```
+YYYY-MM-DD-aws-blog-[title-slug].md
+```
+
+#### **Front Matter模板**
+```yaml
+---
+layout: post
+title: "[RSS源] 文章标题"
+date: YYYY-MM-DDTHH:MM:SS+00:00
+categories: [aws, 自动分类]
+tags: [自动提取的标签]
+toc: true
+math: false
+author: "AWS Blog 摘要"
+original_author: "原作者"
+original_link: "原文链接"
+---
+```
+
+### **手动干预场景**
+虽然大部分流程已自动化，但以下情况可能需要手动处理：
+
+#### **内容质量控制**
+- 检查AI生成的摘要质量
+- 验证分类和标签的准确性
+- 处理特殊格式或图片内容
+
+#### **重复内容管理**
+```bash
+# 检查可能的重复文章
+grep -r "original_link.*同一链接" _posts/
+
+# 删除重复或低质量文章
+git rm _posts/重复文件名.md
+git commit -m "Remove duplicate content"
+```
+
+#### **批量操作**
+```bash
+# 查看自动化生成的文章
+find _posts -name "*aws-blog*" -newer _posts/2025-07-01-welcome-to-aws-yz-blog.md
+
+# 批量修改分类（如需要）
+sed -i 's/categories: \[aws\]/categories: [aws, news]/' _posts/*aws-blog*.md
+```
+
 ## 🖼️ 图片管理规范
 
 ### **图片目录结构**
@@ -441,18 +525,56 @@ echo "文章总数: $(find _posts -name '*.md' | wc -l)"
 echo "最新文章: $(ls -t _posts/*.md | head -1 | xargs basename)"
 echo "Git状态: $(git status --porcelain | wc -l) 个未提交更改"
 echo "构建状态: $(bundle exec jekyll build 2>&1 | grep -c 'done')"
+
+# 自动化内容统计
+echo "自动化文章: $(find _posts -name '*aws-blog*' | wc -l)"
+echo "原创文章: $(find _posts -not -name '*aws-blog*' -name '*.md' | wc -l)"
+echo "最新自动化文章: $(find _posts -name '*aws-blog*' | sort | tail -1 | xargs basename)"
+```
+
+### **n8n工作流维护**
+```bash
+# 检查DynamoDB时间戳（需要AWS CLI配置）
+aws dynamodb get-item --table-name rss-timestamp --key '{"id":{"N":"1"}}' --query 'Item'
+
+# 验证RSS源可访问性
+curl -I https://aws.amazon.com/blogs/aws/feed/
+curl -I https://aws.amazon.com/blogs/aws-insights/feed/
+curl -I https://aws.amazon.com/blogs/gametech/feed/
+curl -I https://aws.amazon.com/blogs/machine-learning/feed/
 ```
 
 ### **下一步建议**
-1. **增加原创内容**: 目前原创文章占比较低，建议增加更多原创技术分享
-2. **内容深度优化**: 在AWS博客摘要基础上，添加个人见解和实践经验
-3. **建立写作计划**: 制定定期发布计划，保持博客活跃度
+1. **平衡自动化与原创**: 当前96%为自动化内容，建议增加20%原创技术分享
+2. **内容深度优化**: 在自动摘要基础上，添加个人见解和实践经验
+3. **质量控制流程**: 定期审查自动化生成的内容质量
 4. **读者互动**: 考虑添加评论系统或社交媒体链接
+5. **n8n工作流优化**: 
+   - 调整AI提示词以提高摘要质量
+   - 优化分类算法的准确性
+   - 增加内容去重机制
+
+### **自动化监控**
+```bash
+# 检查n8n自动化状态
+echo "最近自动发布的文章:"
+find _posts -name "*aws-blog*" -newer _posts/2025-07-01-welcome-to-aws-yz-blog.md | head -5
+
+# 检查RSS源分布
+echo "各RSS源文章数量:"
+grep -h "original_link" _posts/*.md | grep -o 'blogs/[^/]*' | sort | uniq -c
+
+# 验证自动化质量
+echo "检查可能的问题文章:"
+grep -l "summary.*解析失败\|类型错误" _posts/*.md
+```
 
 Happy writing! ✍️
 
 ---
 
 **最后更新**: 2025年7月4日  
-**项目状态**: 52篇文章，已清理重复内容  
-**维护者**: YZ Wang
+**项目状态**: 72篇文章（52篇自动化 + 20篇恢复），已集成n8n自动化发布系统  
+**自动化程度**: 96% AWS博客摘要自动化，4% 原创内容  
+**维护者**: YZ Wang  
+**n8n工作流**: 支持4个RSS源的自动监控和发布
